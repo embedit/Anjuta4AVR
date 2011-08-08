@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-template>
+	<project-wizard>
+		<name>AVR-GCC C Project</name>
+		<description>AVR Makefile-based Project</description>
+		<icon>avrmkfile-logo.png</icon>
+		<category>Embedded</category>
+		<required-program>make</required-program>
+	</project-wizard>
+
+	<page name="projectoptions" label="Project options" description="Project directory, output file etc.">
+		<property type="string" summary="yes" restriction="filename" name="Name" mandatory="yes" default="foobar" label="Project name:" description=""></property>
+		<property type="directory" summary="yes" name="Destination" mandatory="yes" exist="no" default="[+AnjutaProjectDirectory+]/foobar" label="Project directory:" description=""></property>
+		<property type="boolean" name="UseLib" default="0" label="Use extended Library" description="Initialisation for additionally library functions"></property>
+	</page>
+
+	<page name="mcuoptions" label="Select MCU Options" description="Options for project build system">
+		<property type="list" name="MCU" editable="no" default="atmega8" label="MCU:" description="Select MCU" summary="yes">
+			<item name="atmega8" label="ATmega8"></item>
+			<item name="atmega16" label="ATmega16"></item>
+			<item name="atmega32" label="ATmega32"></item>
+			<item name="atmega128" label="ATmega128"></item>
+			<item name="atmega2560" label="ATmega2560"></item>
+		</property>
+		<property type="list" name="F_CPU" editable="yes" default="16000000" label="F_CPU (Hz):" description="Select F_CPU" summary="yes">
+			<item name="7372800" label="7372800"></item>
+			<item name="8000000" label="8000000"></item>
+			<item name="11059200" label="11059200"></item>
+			<item name="12000000" label="12000000"></item>
+			<item name="14745600" label="14745600"></item>
+			<item name="16000000" label="16000000"></item>
+			<item name="18432000" label="18432000"></item>
+			<item name="20000000" label="20000000"></item>
+			<item name="32000000" label="32000000"></item>
+		</property>
+	</page>
+
+	<page name="compileroptions" label="Compiler options" description="Set Compiler Options">
+		<property type="list" name="OPT" editable="no" default="s" label="Optimize:" description="Select Optimization">
+			<item name="s" label="-Os"></item>
+			<item name="0" label="-O0"></item>
+			<item name="1" label="-O1"></item>
+			<item name="2" label="-O2"></item>
+			<item name="3" label="-O3"></item>
+		</property>
+		<property type="list" name="OUTPUT_FORMAT" editable="no" default="ihex" label="Output Format:" description="Select Output Format">
+			<item name="ihex" label="ihex"></item>
+			<item name="srec" label="srec"></item>
+			<item name="binary" label="binary"></item>
+		</property>
+	</page>
+
+	<page name="programmeroptions" label="Select Programmer Options:" description="Options for Programmer">
+		<property type="list" name="PROGRAMMER" editable="no" default="avrdude" label="Select Programmer Tool:" description="Select Programmer Tool">
+			<item name="avrdude" label="Avrdude"></item>
+			<item name="bootloader" label="FastBoot"></item>
+		</property>
+		<property type="list" name="AVRDUDE_PROGRAMMER" editable="no" default="avrisp2" label="Programmer (avrdude only):" description="Select Avrdude Programmer">
+			<item name="avrisp2" label="AVR ISP mkII"></item>
+			<item name="usbasp" label="USBasp"></item>
+			<item name="avr109" label="AVR109 Bootloader"></item>
+			<item name="avr911" label="AVR911"></item>
+			<item name="arduino" label="Arduino Bootloader"></item>
+		</property>
+		<property type="list" name="PROGRAMMER_PORT" editable="yes" default="usb" label="Port:" description="Select Avrdude Port">
+			<item name="usb" label="USB"></item>
+			<item name="/dev/ttyS0" label="/dev/ttyS0"></item>
+			<item name="/dev/ttyS1" label="/dev/ttyS1"></item>
+			<item name="/dev/ttyS2" label="/dev/ttyS2"></item>
+			<item name="/dev/ttyS3" label="/dev/ttyS3"></item>
+			<item name="/dev/ttyUSB0" label="/dev/ttyUSB0"></item>
+			<item name="/dev/ttyUSB1" label="/dev/ttyUSB1"></item>
+			<item name="/dev/ttyACM0" label="/dev/ttyACM0"></item>
+		</property>
+		<property type="list" name="PROGRAMMER_BAUDRATE" editable="yes" default="9600" label="Baudrate:" description="Select Avrdude Baudrate">
+			<item name="9600" label="9600"></item>
+			<item name="19200" label="19200"></item>
+			<item name="115200" label="115200"></item>
+		</property>
+		<property type="boolean" name="ProgramFuse" default="0" label="Configure Fusebits:" description="Edit Fusebit Settings"></property>
+	</page>
+
+[+IF (=(get "UseLib") "1")+]
+	<page  name="selectlibs" label="Add Library Functions" description="Add Funktions from EP GCC Library">
+		<property type="boolean" name="configUSART0" default="0" label="USART0:"></property>
+[+IF (or (=(get "MCU") "ATmega128") (=(get "MCU") "ATmega2560"))+]
+		<property type="boolean" name="configUSART1" default="0" label="USART1:"></property>
+[+ENDIF+]
+[+IF (=(get "MCU") "ATmega2560")+]
+		<property type="boolean" name="configUSART2" default="0" label="USART2:"></property>
+		<property type="boolean" name="configUSART3" default="0" label="USART3"></property>
+[+ENDIF+]
+		<property type="boolean" name="configLCD" default="0" label="HD44780 LC Display:"></property>
+	</page>
+[+ENDIF+]
+
+[+IF (=(get "configUSART0") "1")+]
+	<page name="usart0options" label="USART0 options" description="Set USART0 Options">
+		<property type="list" name="BAUD0" editable="yes" default="9600" label="Baudrate" description="Select Baudrate">
+			<item name="9600" label="9600"></item>
+			<item name="19200" label="19200"></item>
+			<item name="115200" label="115200"></item>
+		</property>
+		<property type="list" name="RX0BUF" default="16" label="RX Buffer">
+			<item name="2" label="2 Byte"></item>
+			<item name="4" label="4 Byte"></item>
+			<item name="8" label="8 Byte"></item>
+			<item name="16" label="16 Byte"></item>
+			<item name="32" label="32 Byte"></item>
+			<item name="64" label="64 Byte"></item>
+			<item name="128" label="128 Byte"></item>
+			<item name="256" label="256 Byte"></item>
+		</property>
+		<property type="list" name="TX0BUF" default="16" label="TX Buffer">
+			<item name="2" label="2 Byte"></item>
+			<item name="4" label="4 Byte"></item>
+			<item name="8" label="8 Byte"></item>
+			<item name="16" label="16 Byte"></item>
+			<item name="32" label="32 Byte"></item>
+			<item name="64" label="64 Byte"></item>
+			<item name="128" label="128 Byte"></item>
+			<item name="256" label="256 Byte"></item>
+		</property>
+	</page>
+[+ENDIF+]
+
+[+IF (=(get "configLCD") "1")+]
+	<page name="lcdoptions" label="LCD Settings" description="">
+		<property type="list" name="LCDRows" default="4" label="LCD Rows:">
+			<item name="1" label="1 Row"></item>
+			<item name="2" label="2 Rows"></item>
+			<item name="4" label="4 Rows"></item>
+		</property>
+		<property type="list" name="LCDCold" default="20" label="LCD Cols:">
+			<item name="8" label="8 Columns"></item>
+			<item name="16" label="16 Columns"></item>
+			<item name="20" label="20 Columns"></item>
+			<item name="40" label="40 Columns"></item>
+		</property>
+		<property type="list" name="LCDDataPort" default="PORTB" label="LCD Data Port" description="Port for the 4 Bit Data Bus">
+			<item name="PORTA" label="PORTA"></item>
+			<item name="PORTB" label="PORTB"></item>
+			<item name="PORTC" label="PORTC"></item>
+			<item name="PORTD" label="PORTD"></item>
+			<item name="PORTE" label="PORTE"></item>
+			<item name="PORTF" label="PORTF"></item>
+			<item name="PORTG" label="PORTG"></item>
+		</property>
+		<property type="list" name="LCDD4" default="0" label="LCD D4" description="Where is the Data Bus">
+			<item name="0" label="Low Nibble"></item>
+			<item name="4" label="High Nibble"></item>
+		</property>
+		<property type="list" name="LCDCtrlPort" default="PORTB" label="LCD Control Port" description="Port for Control Signals">
+			<item name="PORTA" label="PORTA"></item>
+			<item name="PORTB" label="PORTB"></item>
+			<item name="PORTC" label="PORTC"></item>
+			<item name="PORTD" label="PORTD"></item>
+			<item name="PORTE" label="PORTE"></item>
+			<item name="PORTF" label="PORTF"></item>
+			<item name="PORTG" label="PORTG"></item>
+		</property>
+		<property type="list" name="LCDRS" default="PIN6" label="LCD RS">
+			<item name="0" lable="PIN0"></item>
+			<item name="1" lable="PIN1"></item>
+			<item name="2" lable="PIN2"></item>
+			<item name="3" lable="PIN3"></item>
+			<item name="4" lable="PIN4"></item>
+			<item name="5" lable="PIN5"></item>
+			<item name="6" lable="PIN6"></item>
+			<item name="7" lable="PIN7"></item>
+		</property>
+		<property type="list" name="LCDRW" default="PIN5" label="LCD RW">
+			<item name="0" lable="PIN0"></item>
+			<item name="1" lable="PIN1"></item>
+			<item name="2" lable="PIN2"></item>
+			<item name="3" lable="PIN3"></item>
+			<item name="4" lable="PIN4"></item>
+			<item name="5" lable="PIN5"></item>
+			<item name="6" lable="PIN6"></item>
+			<item name="7" lable="PIN7"></item>
+		</property>
+		<property type="list" name="LCDE" default="PIN4" label="LCD Enable">
+			<item name="0" lable="PIN0"></item>
+			<item name="1" lable="PIN1"></item>
+			<item name="2" lable="PIN2"></item>
+			<item name="3" lable="PIN3"></item>
+			<item name="4" lable="PIN4"></item>
+			<item name="5" lable="PIN5"></item>
+			<item name="6" lable="PIN6"></item>
+			<item name="7" lable="PIN7"></item>
+		</property>
+		<property type="list" name="LCDBL" default="PIN3" label="LCD Backlight">
+			<item name="0" lable="PIN0"></item>
+			<item name="1" lable="PIN1"></item>
+			<item name="2" lable="PIN2"></item>
+			<item name="3" lable="PIN3"></item>
+			<item name="4" lable="PIN4"></item>
+			<item name="5" lable="PIN5"></item>
+			<item name="6" lable="PIN6"></item>
+			<item name="7" lable="PIN7"></item>
+		</property>
+	</page>
+[+ENDIF+]
+
+[+IF (=(get "ProgramFuse") "1")+]
+[+IF (=(get "MCU") "ATmega8" )+]
+	<page name="ProgFuseBytes" label="Fusebit Settings" description="">
+		<property type="string" name="LFUSE" editable="yes" default="0xE1" label="Low Fuse Byte" description=""></property>
+		<property type="string" name="HFUSE" editable="yes" default="0xD9" label="High Fuse Byte" description=""></property>
+	</page>
+[+ELIF (or (=(get "MCU") "ATmega16") (=(get "MCU") "ATmega32")) +]
+	<page name="ProgFuseBytes" label="Fusebit Settings" description="">
+		<property type="string" name="LFUSE" editable="yes" default="0xE1" label="Low Fuse Byte" description=""></property>
+		<property type="string" name="HFUSE" editable="yes" default="0x99" label="High Fuse Byte" description=""></property>
+	</page>
+[+ELIF (=(get "MCU") "ATmega128")+]
+	<page name="ProgFuseBytes" label="Fusebit Settings" description="">
+		<property type="string" name="LFUSE" editable="yes" default="0xC1" label="Low Fuse Byte" description=""></property>
+		<property type="string" name="HFUSE" editable="yes" default="0x99" label="High Fuse Byte" description=""></property>
+		<property type="string" name="EFUSE" editable="yes" default="0xFD" label="Ext Fuse Byte" description=""></property>
+	</page>
+[+ENDIF+]
+[+ENDIF+]
+
+
+	<content>
+		<directory source="avrmkfile" destination="[+Destination+]">
+			<file source="project.anjuta" destination='[+(string-substitute (string->c-name! (string-downcase (get "Name"))) " " "-")+].anjuta'/>
+			<file source="src/main.c" destination='[+(string-substitute (string->c-name! (string-downcase (get "Name"))) " " "-")+].c'/>
+			<file source="src/Makefile.tpl" destination="Makefile"/>
+		</directory>
+	</content>
+[+IF (=(get "UseLib") "1")+]
+	<content>
+		<directory source="avrmkfile" destination="[+Destination+]">
+			<file source="src/config.tpl" destination="config.h" />
+		</directory>
+		<directory source="avrmkfile/src/lib" destination="[+Destination+]/lib">
+			<file source="utils.c" destination="utils.c" />
+			<file source="utils.h" destination="utils.h" />
+			<file source="usart.c" destination="usart.c" />
+			<file source="usart.h" destination="usart.h" />
+			<file source="usart1.c" destination="usart1.c" />
+			<file source="usart1.h" destination="usart1.h" />
+			<file source="usart2.c" destination="usart2.c" />
+			<file source="usart2.h" destination="usart2.h" />
+			<file source="usart3.c" destination="usart3.c" />
+			<file source="usart3.h" destination="usart3.h" />
+			<file source="systick.c" destination="systick.c" />
+			<file source="systick.h" destination="systick.h" />
+			<file source="sysswitch.c" destination="sysswitch.c" />
+			<file source="sysswitch.h" destination="sysswitch.h" />
+			<file source="sysled.c" destination="sysled.c" />
+			<file source="sysled.h" destination="sysled.h" />
+			<file source="sysadc.c" destination="sysadc.c" />
+			<file source="sysadc.h" destination="sysadc.h" />
+		</directory>
+	</content>
+[+ENDIF+]
+	<action>
+		<open file='[+Destination+]/[+(string-substitute (string->c-name! (string-downcase (get "Name"))) " " "-")+].anjuta'/>
+	</action>
+</project-template>
